@@ -20,9 +20,14 @@ public class Euro {
 		return this;
 	}
 	
-	public Euro sottrai(Euro e) {
-		this.valore = this.valore - e.getValore();
-		return this;
+	public boolean sottrai(Euro e) {
+		long temp = this.valore - e.getValore();
+		if(temp < 0)
+			return false;
+		else {
+			this.valore = temp;
+			return true;
+		}
 	}
 	
 	public boolean ugualeA(Euro e){

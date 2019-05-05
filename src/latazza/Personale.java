@@ -9,25 +9,26 @@ public class Personale {
 		listaPersonale = new ArrayList<Dipendente>(); 
 	}
 	
-	public int searchD(Dipendente d) {
-		int i = 0;
-		for(Dipendente element:listaPersonale) {
-			if(d.equals(element) == true)
-				return i;
-			i++;
+	public int CercaDipendente(String nome, String cognome) {
+		int index = 0;
+		for(Dipendente d: listaPersonale) {
+			if(d.isEqualDipendente(nome, cognome))
+				return index;
+			index++;
 		}
 		return -1;
 	}
 	
-	public boolean aggiungiPersonale(Dipendente d) {
-		if(searchD(d) != -1)
+
+	public boolean aggiungiPersonale(String nome, String cognome) {
+		if(CercaDipendente(nome,cognome) != -1)
 			return false;
-		listaPersonale.add(d);
+		listaPersonale.add(new Dipendente(nome,cognome));
 		return true;
 	}
 
-	public boolean eliminaPersonale(Dipendente d) {
-		int index = searchD(d);
+	public boolean eliminaPersonale(String nome,String cognome) {
+		int index = CercaDipendente(nome,cognome);
 		if(index == -1) return false;
 		listaPersonale.remove(index);
 		return true;
@@ -37,7 +38,7 @@ public class Personale {
 		return listaPersonale;
 	}
 	
-	public String[] getValori() {
+	public String[] getStringPersonale() {
 		String [] aux = new String[listaPersonale.size()];
 		int i = 0;
 		for(Dipendente element:listaPersonale) {

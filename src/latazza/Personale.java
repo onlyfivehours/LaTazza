@@ -9,18 +9,47 @@ public class Personale {
 		listaPersonale = new ArrayList<Dipendente>(); 
 	}
 	
-	public void aggiungiPersonale(Dipendente d) {
+	public int searchD(Dipendente d) {
+		int i = 0;
+		for(Dipendente element:listaPersonale) {
+			if(d.equals(element) == true)
+				return i;
+			i++;
+		}
+		return -1;
+	}
+	
+	public boolean aggiungiPersonale(Dipendente d) {
+		if(searchD(d) != -1)
+			return false;
 		listaPersonale.add(d);
+		return true;
 	}
 
 	public boolean eliminaPersonale(Dipendente d) {
-		return listaPersonale.remove(d);
+		int index = searchD(d);
+		if(index == -1) return false;
+		listaPersonale.remove(index);
+		return true;
 	}
 	
 	public ArrayList<Dipendente> getPersonale() {
 		return listaPersonale;
 	}
 	
+	public String[] getValori() {
+		String [] aux = new String[listaPersonale.size()];
+		int i = 0;
+		for(Dipendente element:listaPersonale) {
+			aux[i] = element.getNome() + " " + element.getCognome();
+			i++;
+		}
+		return aux;
+	}
+	
+	public int size() {
+		return listaPersonale.size();
+	}
 	
 	//TODO ricordarsi di mettere un trigger che aggiorni la stampa dei debiti dopo che essi sono stati pagati o
 	//sono diminuiti

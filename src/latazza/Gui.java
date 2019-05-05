@@ -188,7 +188,7 @@ public class Gui {
 		
 		
 		
-		
+	
 		shlLatazza.open();
 		shlLatazza.layout();
 		while (!shlLatazza.isDisposed()) {

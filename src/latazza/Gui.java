@@ -166,8 +166,10 @@ public class Gui {
 		btnButtonAggiungiPersonale.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				String [] NuovoDipendente = txtNomeDipendente.getText().split(" ");
-				//System.out.println("aggiunto "+ persona[0] + " " + persona[1]);
+				String NomeCognome = txtNomeDipendente.getText();
+				if(NomeCognome.isEmpty() || NomeCognome.equals("Nome Cognome")) return;
+				
+				String [] NuovoDipendente = NomeCognome.split(" ");
 
 				if(personale.aggiungiPersonale(NuovoDipendente[0],NuovoDipendente[1])) {
 					lblLabelAggiungiPersonale.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
@@ -187,7 +189,7 @@ public class Gui {
 			public void widgetSelected(SelectionEvent e) {
 				String NomeCognome = combo_SelezionaPersonale.getText();
 				if(NomeCognome.equals("Nome Cognome")) return;
-			
+				
 				String [] DipendenteEliminato = NomeCognome.split(" ");
 				personale.eliminaPersonale(DipendenteEliminato[0],DipendenteEliminato[1]);
 				combo_SelezionaPersonale.setItems(personale.getStringPersonale());

@@ -36,9 +36,21 @@ public class Gui {
 	private static Cassa cassa;
 	private static Text txtNomeDipendente;
 	private static Personale personale;
+	private static Text txtNomeVisitatore;
+	private static Text txtQuantitcialde;
 	
 	
-	
+	public static int strConvertInt(String str) {
+		
+		try
+	    {
+	      return Integer.parseInt(str.trim());
+	    }
+	    catch (NumberFormatException nfe)
+	    {
+	    	return -1;
+	    }
+	}
 	
 	public static void initialize() {
 		cassa = new Cassa();
@@ -73,8 +85,6 @@ public class Gui {
         TabItem tabGestioneGenerale = new TabItem(tabFolder, SWT.NONE | SWT.CLOSE);
         tabGestioneGenerale.setText("Gestione Generale");
        
-        
-        
           
 		
 ///////////////////////////////////////////////////////GESTIONE MAGAZZINO //////////////////////////////////////////////////////////////////////////
@@ -118,7 +128,116 @@ public class Gui {
 		
 //////////////////////////////////////////////////////FINE GESTIONE MAGAZZINO ///////////////////////////////////////////////////////////////
 		
-		
+        
+//////////////////////////////////////////////////////Registra Vendite Cialde///////////////////////////////////////////////////////////////////////
+
+Combo comboNomePersonale = new Combo(GestioneVendite, SWT.NONE);
+comboNomePersonale.setBounds(10, 10, 131, 20);
+comboNomePersonale.setItems(personale.getStringPersonale());
+comboNomePersonale.setText("Nome Personale");
+
+Combo comboTipoCialda = new Combo(GestioneVendite, SWT.NONE);
+comboTipoCialda.setBounds(10, 59, 131, 27);
+comboTipoCialda.setItems(tipiDiCialde);
+comboTipoCialda.setText("Tipo Cialda");
+
+txtNomeVisitatore = new Text(GestioneVendite, SWT.BORDER);
+txtNomeVisitatore.setText("Nome Visitatore");
+txtNomeVisitatore.setBounds(184, 10, 101, 27);
+
+txtQuantitcialde = new Text(GestioneVendite, SWT.BORDER);
+txtQuantitcialde.setText("Quantità(cialde)");
+txtQuantitcialde.setBounds(184, 59, 101, 27);
+
+Button RadioContanti = new Button(GestioneVendite, SWT.RADIO);
+RadioContanti.setBounds(60, 103, 81, 20);
+RadioContanti.setSelection(true);
+RadioContanti.setText("Contanti");
+
+Button RadioCredito = new Button(GestioneVendite, SWT.RADIO);
+RadioCredito.setBounds(184, 103, 93, 20);
+RadioCredito.setText("A credito");
+
+Label LabelVenditaCialde = new Label(GestioneVendite, SWT.NONE);
+LabelVenditaCialde.setBounds(26, 129, 240, 34);
+
+Label lblNewLabel = new Label(GestioneVendite, SWT.NONE);
+lblNewLabel.setBounds(155, 20, 20, 17);
+lblNewLabel.setText("O");
+
+Button ButtonRegistraVendita = new Button(GestioneVendite, SWT.NONE);
+ButtonRegistraVendita.addSelectionListener(new SelectionAdapter() {
+@Override
+public void widgetSelected(SelectionEvent e) {
+if(comboNomePersonale.getText().equals("Nome Personale")) {
+if(txtNomeVisitatore.getText().isEmpty() || txtNomeVisitatore.getText().equals("Nome Visitatore")) return;
+if(txtQuantitcialde.getText().isEmpty() || txtQuantitcialde.getText().equals("Quantità(cialde)")) return;
+
+
+}
+if(txtQuantitcialde.getText().isEmpty() || txtQuantitcialde.getText().equals("Quantità(cialde)")) return;
+
+Integer numeroCialde = strConvertInt(txtQuantitcialde.getText());
+if(numeroCialde.equals(-1)) {
+LabelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
+LabelVenditaCialde.setText("importo non valido");
+return;
+}
+Euro pagamento = new Euro(0, numeroCialde * 50);
+cassa.aggiungiSaldo(pagamento);
+
+switch(comboTipoCialda.getText()) {
+case "caffè":
+magazzino.EliminaCialdeCaffe(numeroCialde);
+break;
+case "caffè arabica":
+magazzino.EliminaCialdeCaffeArabica(numeroCialde);
+break;
+case "thè":
+magazzino.EliminaCialdeThe(numeroCialde);
+break;
+case "thè al limone":
+magazzino.EliminaCialdeTheLimone(numeroCialde);
+break;
+case "cioccolata" :
+magazzino.EliminaCialdeCioccolata(numeroCialde);
+break;
+case "camomilla":
+magazzino.EliminaCialdeCamomilla(numeroCialde);
+break;
+default: System.out.println("default");
+}
+
+LabelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
+LabelVenditaCialde.setText("importo non valido");
+
+
+
+
+if(RadioCredito.getSelection())
+LabelVenditaCialde.setText(RadioCredito.getText() + " prova credito");
+else if(RadioContanti.getSelection())
+LabelVenditaCialde.setText(RadioContanti.getText() + " prova contanti");
+else
+LabelVenditaCialde.setText(" non dovrebbe farlo");
+
+}
+});
+ButtonRegistraVendita.setBounds(26, 169, 114, 18);
+ButtonRegistraVendita.setText("Registra Vendita");
+
+Button ButtonCancellaVendita = new Button(GestioneVendite, SWT.NONE);
+ButtonCancellaVendita.addSelectionListener(new SelectionAdapter() {
+@Override
+public void widgetSelected(SelectionEvent e) {
+}
+});
+ButtonCancellaVendita.setBounds(191, 169, 75, 18);
+ButtonCancellaVendita.setText("Cancella");
+
+
+////////////////////////////////////////////fine vendita cialde//////////////////////////////////////////////////////////////////////////////////////
+
           
 //////////////////////////////////* GESTIONE PERSONALE *///////////////////////////////////////////////////////////////////////////////////////
         

@@ -61,7 +61,7 @@ public class Gui {
 		shlLatazza.setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
 		shlLatazza.setTouchEnabled(true);
 		shlLatazza.setModified(true);
-		shlLatazza.setSize(512, 330);
+		shlLatazza.setSize(680, 680);
 		shlLatazza.setText(" LaTazza");
 		
 		TabFolder tabFolder = new TabFolder(shlLatazza, SWT.NONE);
@@ -70,73 +70,95 @@ public class Gui {
         TabItem tabGestionePersonale = new TabItem(tabFolder, SWT.NONE);
         tabGestionePersonale.setText("Gestione Personale");
 	
-        TabItem tabGestioneMagazzino = new TabItem(tabFolder, SWT.NONE | SWT.CLOSE);
-        tabGestioneMagazzino.setText("Gestione Magazzino");
-          
-        Group grpGestioneMagazzino = new Group(tabFolder,SWT.NONE);
-        tabGestioneMagazzino.setControl(grpGestioneMagazzino);
-        grpGestioneMagazzino.setBounds(10, 10, 234, 123);
+        TabItem tabGestioneGenerale = new TabItem(tabFolder, SWT.NONE | SWT.CLOSE);
+        tabGestioneGenerale.setText("Gestione Generale");
+       
+        
+        
           
 		
 ///////////////////////////////////////////////////////GESTIONE MAGAZZINO //////////////////////////////////////////////////////////////////////////
           
-		Combo combo_SelezionaCialde = new Combo(grpGestioneMagazzino, SWT.NONE);
-		combo_SelezionaCialde.setBounds(329, 10, 153, 34);
+        Group grpGestioneGenerale = new Group(tabFolder,SWT.NONE);
+        tabGestioneGenerale.setControl(grpGestioneGenerale);
+        grpGestioneGenerale.setBounds(10, 10, 234, 123);
+        
+       Group GestioneMagazzino = new Group(grpGestioneGenerale, SWT.NONE);
+  	   GestioneMagazzino.setBounds(10, 304, 297, 254);
+  	   GestioneMagazzino.setText("Gestione Magazzino");
+  	  
+  	   Group GestioneVendite = new Group(grpGestioneGenerale, SWT.NONE);
+  	   GestioneVendite.setBounds(10, 10, 297, 254);
+  	   GestioneVendite.setText("Gestione Vendite");
+  	   
+	   Group DatiGenerali = new Group(grpGestioneGenerale, SWT.NONE);
+  	   DatiGenerali.setBounds(346, 304, 318, 254);
+  	   DatiGenerali.setText("Dati Generali");
+  	   
+  	   
+        
+		Combo combo_SelezionaCialde = new Combo(GestioneMagazzino, SWT.NONE);
+		combo_SelezionaCialde.setBounds(55, 29, 153, 34);
 		String[] tipiDiCialde = {"caffè","caffè arabica","thè","thè al limone","cioccolata","camomilla"};
 		combo_SelezionaCialde.setItems(tipiDiCialde);
 		combo_SelezionaCialde.setText("tipo cialda");
 
 		
-		Button btnAggiungiCialde = new Button(grpGestioneMagazzino, SWT.NONE);
-		btnAggiungiCialde.setBounds(378, 125, 79, 22);
+		Button btnAggiungiCialde = new Button(GestioneMagazzino, SWT.NONE);
+		btnAggiungiCialde.setBounds(96, 122, 79, 22);
 		btnAggiungiCialde.setText("Compra");
 		
-		txtQuantitascatole = new Text(grpGestioneMagazzino, SWT.BORDER);
+		txtQuantitascatole = new Text(GestioneMagazzino, SWT.BORDER);
 		txtQuantitascatole.setText("quantita (scatole)");
-		txtQuantitascatole.setBounds(344, 60, 138, 29);
+		txtQuantitascatole.setBounds(70, 72, 138, 29);
+		
+		Group GestioneDebiti = new Group(grpGestioneGenerale, SWT.NONE);
+		GestioneDebiti.setBounds(346, 10, 318, 254);
+		GestioneDebiti.setText("Gestione Debiti");
 		
 //////////////////////////////////////////////////////FINE GESTIONE MAGAZZINO ///////////////////////////////////////////////////////////////
 		
 		
           
 //////////////////////////////////* GESTIONE PERSONALE *///////////////////////////////////////////////////////////////////////////////////////
-	
-          
-          Group grpGestionePersonale = new Group(tabFolder,SWT.NONE);
-          tabGestionePersonale.setControl(grpGestionePersonale);
-          grpGestionePersonale.setBounds(10, 10, 234, 123);
-          
+        
+        Group grpGestionePersonale = new Group(tabFolder,SWT.NONE);
+        tabGestionePersonale.setControl(grpGestionePersonale);
+        grpGestionePersonale.setBounds(10, 10, 234, 123);
+        
+        
+    	  Group AggiungiPersonale = new Group(grpGestionePersonale, SWT.NONE);
+    	  AggiungiPersonale.setBounds(10, 10, 297, 254);
+    	  AggiungiPersonale.setText("Aggiungi Personale");
+    	  
+    	  Group EliminaPersonale = new Group(grpGestionePersonale, SWT.NONE);
+    	  EliminaPersonale.setBounds(346, 10, 318, 254);
+    	  EliminaPersonale.setText("Elimina Personale");
+    	  
 
-          txtNomeDipendente = new Text(grpGestionePersonale, SWT.BORDER);
-          txtNomeDipendente.setText("Nome Cognome");
-          txtNomeDipendente.setBounds(276, 103, 168, 34);
-          
-          Button btnButtonAggiungiPersonale = new Button(grpGestionePersonale, SWT.NONE);
-          btnButtonAggiungiPersonale.setBounds(325, 162, 81, 27);
-          btnButtonAggiungiPersonale.setText("Aggiungi");
-          
-          Label lblLabelAggiungiPersonale = new Label(grpGestionePersonale, SWT.NONE);
-          lblLabelAggiungiPersonale.setBounds(247, 195, 229, 54);
+        txtNomeDipendente = new Text(AggiungiPersonale, SWT.BORDER);
+        txtNomeDipendente.setText("Nome Cognome");
+        txtNomeDipendente.setBounds(63, 65, 168, 34);
+        
+        Button btnButtonAggiungiPersonale = new Button(AggiungiPersonale, SWT.NONE);
+        btnButtonAggiungiPersonale.setBounds(104, 115, 81, 27);
+        btnButtonAggiungiPersonale.setText("Aggiungi");
+        
+        Label lblLabelAggiungiPersonale = new Label(AggiungiPersonale, SWT.NONE);
+        lblLabelAggiungiPersonale.setBounds(10, 168, 275, 54);
 
-          Label lblLabelRimuoviPersonale = new Label(grpGestionePersonale, SWT.NONE);
-          lblLabelRimuoviPersonale.setBounds(10, 195, 213, 54);
-          
-          Button btnButtonRimuoviPersonale = new Button(grpGestionePersonale, SWT.NONE);
-          btnButtonRimuoviPersonale.setBounds(74, 162, 81, 27);
-          btnButtonRimuoviPersonale.setText("Rimuovi");
-          
-          Combo combo_SelezionaPersonale = new Combo(grpGestionePersonale, SWT.NONE);
-          combo_SelezionaPersonale.setBounds(37, 103, 186, 27);
-          combo_SelezionaPersonale.setItems(personale.getStringPersonale());
-          combo_SelezionaPersonale.setText("Nome Cognome");
-          
-          Label lblTitleRimuoviPersonale = new Label(grpGestionePersonale, SWT.NONE);
-          lblTitleRimuoviPersonale.setBounds(56, 42, 122, 20);
-          lblTitleRimuoviPersonale.setText("Rimuovi Personale");
-          
-          Label lblTitleAggiungiPersonale = new Label(grpGestionePersonale, SWT.NONE);
-          lblTitleAggiungiPersonale.setBounds(302, 42, 121, 20);
-          lblTitleAggiungiPersonale.setText("Aggiungi Personale");
+        Label lblLabelRimuoviPersonale = new Label(EliminaPersonale, SWT.NONE);
+        lblLabelRimuoviPersonale.setBounds(10, 168, 296, 54);
+        
+        Button btnButtonRimuoviPersonale = new Button(EliminaPersonale, SWT.NONE);
+        btnButtonRimuoviPersonale.setBounds(125, 117, 81, 27);
+        btnButtonRimuoviPersonale.setText("Rimuovi");
+        
+        Combo combo_SelezionaPersonale = new Combo(EliminaPersonale, SWT.NONE);
+        combo_SelezionaPersonale.setBounds(83, 65, 186, 27);
+        combo_SelezionaPersonale.setItems(personale.getStringPersonale());
+        combo_SelezionaPersonale.setText("Nome Cognome");
+        
 
 ////////////////////////////////////////////////// FINE GESTIONE PERSONALE //////////////////////////////////////////////////////////////////////////
 

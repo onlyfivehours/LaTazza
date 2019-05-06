@@ -16,7 +16,7 @@ public class Cialda {
 	public int getQuantità() {
 		return quantita;
 	}
-	//TODO non so se va bene cosi o se è necessario creare una classe "scatola"
+	
 	public void aggiungiCialda(int scatole){
 		quantita += (scatole * 50);
 	}

@@ -67,6 +67,32 @@ public class Magazzino {
 		cioccolata.aggiungiCialda(numeroScatole);
 	}
 	
+///////////////////////////////////////////////////////////
+	
+	public void EliminaCialdeCaffe(int numeroScatole) {
+		caffe.eliminaCialda(numeroScatole);
+	}
+	
+	public void EliminaCialdeCaffeArabica(int numeroScatole){
+		caffeArabica.eliminaCialda(numeroScatole);
+	}
+	
+	public void EliminaCialdeThe(int numeroScatole) {
+		the.eliminaCialda(numeroScatole);
+	}
+	
+	public void EliminaCialdeTheLimone(int numeroScatole) {
+		theLimone.eliminaCialda(numeroScatole);
+	}
+	
+	public void  EliminaCialdeCamomilla(int numeroScatole) {
+		camomilla.eliminaCialda(numeroScatole);
+	}
+	
+	public void EliminaCialdeCioccolata(int numeroScatole) {
+		cioccolata.eliminaCialda(numeroScatole);
+	}
+	
 	
 	
 	public String stampaInformazioniMagazzino() {

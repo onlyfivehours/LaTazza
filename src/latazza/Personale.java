@@ -55,11 +55,12 @@ public class Personale {
 	//TODO ricordarsi di mettere un trigger che aggiorni la stampa dei debiti dopo che essi sono stati pagati o
 	//sono diminuiti
 	public String printDebitiPersonale() {
-		String dati="";
+		String dati="\n\n";
 		for(Dipendente d : listaPersonale){
 			if(d.getDebito().getValore() > 0)
-				dati += d.getNome() + " " + d.getCognome() + ":" + d.getDebito().stampa()+"\n";
+				dati += d.getNome() + " " + d.getCognome() + "debito:" + d.getDebito().stampa()+"\n";
 		}
+		if(dati.equals("\n\n")) dati += "nessun debito registrato";
 		return dati;
 	}
 }

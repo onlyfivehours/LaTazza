@@ -6,8 +6,8 @@ public class Cassa {
 	private Euro saldo;
 	
 	
-	public Cassa() {
-		saldo = new Euro(0);
+	public Cassa(long euro) {
+		saldo = new Euro(euro);
 	}
 	
 	public void aggiungiSaldo(Euro importo) {
@@ -24,6 +24,6 @@ public class Cassa {
 	}
 	
 	public String printSaldo() {
-		return saldo.stampa();
+		return "Saldo disponibile: "+saldo.stampa();
 	}
 }

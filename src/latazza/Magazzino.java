@@ -96,7 +96,7 @@ public class Magazzino {
 	
 	
 	public String stampaInformazioniMagazzino() {
-		return "cialde caffe: "+getCialdeCaffe()+"\n"+
+		return "\n\ncialde caffe: "+getCialdeCaffe()+"\n"+
 			   "cialde caffe arabica: "+getCialdeCaffeArabica()+"\n"+
 			   "cialde the: "+getCialdeThe()+"\n"+
 		       "cialde the limone: "+getCialdeTheLimone()+"\n"+

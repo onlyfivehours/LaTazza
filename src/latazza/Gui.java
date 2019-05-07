@@ -53,14 +53,12 @@ public class Gui {
 	}
 	
 	public static void initialize() {
-		cassa = new Cassa();
+		cassa = new Cassa(50);
 		magazzino = new Magazzino();
 		personale = new Personale();
 	}
-	/**
-	 * Launch the application.
-	 * @param args
-	 */
+
+	
 	public static void main(String[] args) {
 		
 		initialize();
@@ -85,10 +83,7 @@ public class Gui {
         TabItem tabGestioneGenerale = new TabItem(tabFolder, SWT.NONE | SWT.CLOSE);
         tabGestioneGenerale.setText("Gestione Generale");
        
-          
-		
-///////////////////////////////////////////////////////GESTIONE MAGAZZINO //////////////////////////////////////////////////////////////////////////
-          
+        
         Group grpGestioneGenerale = new Group(tabFolder,SWT.NONE);
         tabGestioneGenerale.setControl(grpGestioneGenerale);
         grpGestioneGenerale.setBounds(10, 10, 234, 123);
@@ -101,10 +96,61 @@ public class Gui {
   	   GestioneVendite.setBounds(10, 10, 297, 254);
   	   GestioneVendite.setText("Gestione Vendite");
   	   
-	   Group DatiGenerali = new Group(grpGestioneGenerale, SWT.NONE);
+  	   Group DatiGenerali = new Group(grpGestioneGenerale, SWT.NONE);
   	   DatiGenerali.setBounds(346, 304, 318, 254);
   	   DatiGenerali.setText("Dati Generali");
   	   
+        Group GestioneDebiti = new Group(grpGestioneGenerale, SWT.NONE);
+		GestioneDebiti.setBounds(346, 10, 318, 254);
+		GestioneDebiti.setText("Gestione Debiti");
+		
+		
+		
+		
+		
+//////////////////////////////////////////////////////DATI GENERALI/////////////////////////////////////////////////////////////////////////////////////
+		
+		
+
+		   TabFolder tabFolderDati = new TabFolder(DatiGenerali, SWT.NONE);
+	  	   tabFolderDati.setBounds(10, 20, 296, 202);
+	  	   
+	  	   TabItem tabItemMagazzino = new TabItem(tabFolderDati, SWT.NONE);
+	  	   tabItemMagazzino.setText("Magazzino");
+	  	 
+	  	   TabItem tabItemCassa = new TabItem(tabFolderDati, SWT.NONE);
+	  	   tabItemCassa.setText("Cassa");
+	  	
+	  	   TabItem tabItemDebiti = new TabItem(tabFolderDati, SWT.NONE);
+	  	   tabItemDebiti.setText("Debiti");
+	  
+	  	
+	  	   Label lblInformazioniMagazzino = new Label(tabFolderDati,SWT.NONE);
+	  	   tabItemMagazzino.setControl(lblInformazioniMagazzino);
+	  	   lblInformazioniMagazzino.setText(magazzino.stampaInformazioniMagazzino());
+			
+	  	   Label lblInformazioniCassa = new Label(tabFolderDati,SWT.NONE);
+	  	   tabItemCassa.setControl(lblInformazioniCassa);
+	  	   lblInformazioniCassa.setText(cassa.printSaldo());
+			
+	  	   Label lblInformazioniDebiti = new Label(tabFolderDati,SWT.NONE);
+	  	   tabItemDebiti.setControl(lblInformazioniDebiti);
+	  	   lblInformazioniDebiti.setText(personale.printDebitiPersonale());
+			
+	  	   
+
+//////////////////////////////////////////////////////FINE DATI GENERALI////////////////////////////////////////////////////////////////////////////////
+		
+		
+		
+		
+		
+		
+		
+		
+///////////////////////////////////////////////////////GESTIONE MAGAZZINO //////////////////////////////////////////////////////////////////////////
+          
+   
   	   
         
 		Combo combo_SelezionaCialde = new Combo(GestioneMagazzino, SWT.NONE);
@@ -115,16 +161,70 @@ public class Gui {
 
 		
 		Button btnAggiungiCialde = new Button(GestioneMagazzino, SWT.NONE);
-		btnAggiungiCialde.setBounds(96, 122, 79, 22);
-		btnAggiungiCialde.setText("Compra");
+		btnAggiungiCialde.setBounds(10, 122, 145, 22);
+		btnAggiungiCialde.setText("Registra Rifornimenti");
+		
+		Button btnCancellaMagazzino = new Button(GestioneMagazzino, SWT.NONE);
+		btnCancellaMagazzino.setBounds(173, 122, 79, 22);
+		btnCancellaMagazzino.setText("Cancella");
 		
 		txtQuantitascatole = new Text(GestioneMagazzino, SWT.BORDER);
 		txtQuantitascatole.setText("quantita (scatole)");
 		txtQuantitascatole.setBounds(70, 72, 138, 29);
+		Label lblMessaggioErroreMagazzino = new Label(GestioneMagazzino, SWT.NONE);
+		lblMessaggioErroreMagazzino.setBounds(10, 164, 275, 58);
+
 		
-		Group GestioneDebiti = new Group(grpGestioneGenerale, SWT.NONE);
-		GestioneDebiti.setBounds(346, 10, 318, 254);
-		GestioneDebiti.setText("Gestione Debiti");
+		btnCancellaMagazzino.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				combo_SelezionaCialde.setText("tipo cialda");
+				txtQuantitascatole.setText("quantita (scatole)");
+			}
+		});
+		
+		btnAggiungiCialde.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if(combo_SelezionaCialde.getText().equals("tipo cialda") || txtQuantitascatole.getText().equals("quantita (scatole)")) {
+					lblMessaggioErroreMagazzino.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
+					lblMessaggioErroreMagazzino.setText("Riempire tutti i campi prima di procedere");
+					return;
+				}
+					
+				int input = strConvertInt(txtQuantitascatole.getText());
+				if(input <= 0) {
+					lblMessaggioErroreMagazzino.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
+					lblMessaggioErroreMagazzino.setText("inserire una quantita numerica >= 1");
+				}
+				else if(!cassa.prelevaDenaro(new Euro(20 * input))) { 
+					lblMessaggioErroreMagazzino.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
+					lblMessaggioErroreMagazzino.setText("Il rifornimento non può essere effettuato:"
+							+ " \ncosto di "+input+" scatole di "+combo_SelezionaCialde.getText()+": "+(2000*input)/100+" euro\n"
+									+cassa.printSaldo());
+				  	tabFolderDati.setSelection(1);
+				  	lblInformazioniCassa.setText(cassa.printSaldo());
+
+				}
+				else {
+					switch(combo_SelezionaCialde.getText()) {
+						case "caffè": magazzino.AggiungiCialdeCaffe(input); break;
+						case "caffè arabica": magazzino.AggiungiCialdeCaffeArabica(input); break;
+						case "thè": System.out.println("the"); magazzino.AggiungiCialdeThe(input); break;
+						case "thè al limone": System.out.println("the al limone"); magazzino.AggiungiCialdeTheLimone(input); break;
+						case "cioccolata" : System.out.println("cioccolata"); magazzino.AggiungiCialdeCioccolata(input); break;
+						case "camomilla":System.out.println("camomilla"); magazzino.AggiungiCialdeCamomilla(input); break;
+					}
+					lblMessaggioErroreMagazzino.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
+					lblMessaggioErroreMagazzino.setText("Rifornimento registrato per \n"+ input+
+							" scatole di "+combo_SelezionaCialde.getText()+" per un totale di "+input*20+"€");
+				  	tabFolderDati.setSelection(0);
+				  	lblInformazioniMagazzino.setText(magazzino.stampaInformazioniMagazzino());
+				  	lblInformazioniCassa.setText(cassa.printSaldo());
+				}
+			}
+		});
+		
 		
 //////////////////////////////////////////////////////FINE GESTIONE MAGAZZINO ///////////////////////////////////////////////////////////////
 		
@@ -187,25 +287,25 @@ Euro pagamento = new Euro(0, numeroCialde * 50);
 cassa.aggiungiSaldo(pagamento);
 
 switch(comboTipoCialda.getText()) {
-case "caffè":
-magazzino.EliminaCialdeCaffe(numeroCialde);
-break;
-case "caffè arabica":
-magazzino.EliminaCialdeCaffeArabica(numeroCialde);
-break;
-case "thè":
-magazzino.EliminaCialdeThe(numeroCialde);
-break;
-case "thè al limone":
-magazzino.EliminaCialdeTheLimone(numeroCialde);
-break;
-case "cioccolata" :
-magazzino.EliminaCialdeCioccolata(numeroCialde);
-break;
-case "camomilla":
-magazzino.EliminaCialdeCamomilla(numeroCialde);
-break;
-default: System.out.println("default");
+	case "caffè":
+	magazzino.EliminaCialdeCaffe(numeroCialde);
+	break;
+	case "caffè arabica":
+	magazzino.EliminaCialdeCaffeArabica(numeroCialde);
+	break;
+	case "thè":
+	magazzino.EliminaCialdeThe(numeroCialde);
+	break;
+	case "thè al limone":
+	magazzino.EliminaCialdeTheLimone(numeroCialde);
+	break;
+	case "cioccolata" :
+	magazzino.EliminaCialdeCioccolata(numeroCialde);
+	break;
+	case "camomilla":
+	magazzino.EliminaCialdeCamomilla(numeroCialde);
+	break;
+	default: System.out.println("default");
 }
 
 LabelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
@@ -285,23 +385,7 @@ ButtonCancellaVendita.setText("Cancella");
 		
 		
 		
-		btnAggiungiCialde.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				//System.out.println(combo.getText() + " cialde");
-				switch(combo_SelezionaCialde.getText()) {
-					case "caffè":  if(cassa.getSaldo().getValore() < 2000 * Integer.parseInt(txtQuantitascatole.getText()))
-					
-					break;
-					case "caffè arabica": break;
-					case "thè": System.out.println("the");  break;
-					case "thè al limone": System.out.println("the al limone"); break;
-					case "cioccolata" : System.out.println("cioccolata"); break;
-					case "camomilla":System.out.println("camomilla"); break;
-					default: System.out.println("default");
-				}
-			}
-		});
+
 		
 		
 		btnButtonAggiungiPersonale.addSelectionListener(new SelectionAdapter() {

@@ -34,6 +34,11 @@ public class Personale {
 		return true;
 	}
 	
+	
+	public int size() {
+		return listaPersonale.size();
+	}
+	
 	public ArrayList<Dipendente> getPersonale() {
 		return listaPersonale;
 	}
@@ -48,12 +53,42 @@ public class Personale {
 		return aux;
 	}
 	
-	public int size() {
-		return listaPersonale.size();
+	public boolean IncrementaDebitoDipendente(String nome, String cognome,int euro, double centesimi) {
+		int index = CercaDipendente(nome,cognome);
+		if(index < 0) return false;
+		listaPersonale.get(index).incrementaDebito(new Euro((long)euro,(long)centesimi));
+		return true;
 	}
 	
-	//TODO ricordarsi di mettere un trigger che aggiorni la stampa dei debiti dopo che essi sono stati pagati o
-	//sono diminuiti
+	public boolean DecrementaDebitoDipendente(String nome, String cognome,int euro, double centesimi) {
+		int index = CercaDipendente(nome,cognome);
+		if(index < 0) return false;
+		listaPersonale.get(index).decrementaDebito(new Euro((long)euro,(long)centesimi));
+		return true;
+	}
+	
+	
+	
+	public String[] getStringPersonaleConDebiti() {
+		String [] aux = new String[listaPersonale.size()];
+		int i = 0;
+		for(Dipendente element:listaPersonale) {
+			if(element.getDebito().getValore() > 0)
+				aux[i] = element.getNome() + " " + element.getCognome();
+			i++;
+		}
+		return aux;
+	}
+
+	
+	public long getDebitoDipendente(String nome, String cognome) {
+		int index = CercaDipendente(nome,cognome);
+		if(index < 0)
+			return (long)index;
+		return listaPersonale.get(index).getDebito().getValore();
+		
+	}
+	
 	public String printDebitiPersonale() {
 		String dati="\n\n";
 		for(Dipendente d : listaPersonale){

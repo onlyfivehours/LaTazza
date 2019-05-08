@@ -18,90 +18,53 @@ public class Magazzino {
 		cioccolata = new Cialda(TipoCialda.cioccolata);
 	}
 	
-	public int getCialdeCaffe() {
-		return caffe.getQuantità();
+	
+	public int getQuantitaCialda(String nome) {
+		switch(nome) {
+			case "caffè" : return caffe.getQuantità();
+			case "caffè arabica" : return caffeArabica.getQuantità();
+			case "thè" : return the.getQuantità();
+			case "thè al limone" : return theLimone.getQuantità();
+			case "camomilla" : return camomilla.getQuantità();
+			case "cioccolata" : return cioccolata.getQuantità();
+		}
+		return -1;
+		
 	}
 	
-	public int getCialdeCaffeArabica() {
-		return caffeArabica.getQuantità();
+	public void AggiungiCialda(String nome,int numeroScatole) {
+		switch(nome) {
+			case "caffè" :  caffe.aggiungiCialda(numeroScatole); break;
+			case "caffè arabica" :  caffeArabica.aggiungiCialda(numeroScatole); break;
+			case "thè" :  the.aggiungiCialda(numeroScatole); break;
+			case "thè al limone" :theLimone.aggiungiCialda(numeroScatole); break;
+			case "camomilla" :  camomilla.aggiungiCialda(numeroScatole); break;
+			case "cioccolata" :  cioccolata.aggiungiCialda(numeroScatole); break;
+		}	
 	}
 	
-	public int getCialdeThe() {
-		return the.getQuantità();
-	}
-	
-	public int getCialdeTheLimone() {
-		return theLimone.getQuantità();
-	}
-	
-	public int getCialdeCamomilla() {
-		return camomilla.getQuantità();
-	}
-	
-	public int getCialdeCioccolata() {
-		return cioccolata.getQuantità();
-	}
-	
-	
-	public void AggiungiCialdeCaffe(int numeroScatole) {
-		caffe.aggiungiCialda(numeroScatole);
-	}
-	
-	public void AggiungiCialdeCaffeArabica(int numeroScatole){
-		caffeArabica.aggiungiCialda(numeroScatole);
-	}
-	
-	public void AggiungiCialdeThe(int numeroScatole) {
-		the.aggiungiCialda(numeroScatole);
-	}
-	
-	public void AggiungiCialdeTheLimone(int numeroScatole) {
-		theLimone.aggiungiCialda(numeroScatole);
-	}
-	
-	public void  AggiungiCialdeCamomilla(int numeroScatole) {
-		camomilla.aggiungiCialda(numeroScatole);
-	}
-	
-	public void AggiungiCialdeCioccolata(int numeroScatole) {
-		cioccolata.aggiungiCialda(numeroScatole);
-	}
-	
-///////////////////////////////////////////////////////////
-	
-	public void EliminaCialdeCaffe(int numeroScatole) {
-		caffe.eliminaCialda(numeroScatole);
-	}
-	
-	public void EliminaCialdeCaffeArabica(int numeroScatole){
-		caffeArabica.eliminaCialda(numeroScatole);
-	}
-	
-	public void EliminaCialdeThe(int numeroScatole) {
-		the.eliminaCialda(numeroScatole);
-	}
-	
-	public void EliminaCialdeTheLimone(int numeroScatole) {
-		theLimone.eliminaCialda(numeroScatole);
-	}
-	
-	public void  EliminaCialdeCamomilla(int numeroScatole) {
-		camomilla.eliminaCialda(numeroScatole);
-	}
-	
-	public void EliminaCialdeCioccolata(int numeroScatole) {
-		cioccolata.eliminaCialda(numeroScatole);
+	public boolean EliminaCialda(String nome,int  quantita) {
+		switch(nome) {
+			case "caffè" : return caffe.eliminaCialda(quantita);
+			case "caffè arabica" : return caffeArabica.eliminaCialda(quantita);
+			case "thè" : return the.eliminaCialda(quantita);
+			case "thè al limone" : return theLimone.eliminaCialda(quantita);
+			case "camomilla" : return camomilla.eliminaCialda(quantita);
+			case "cioccolata" : return cioccolata.eliminaCialda(quantita);
+		}
+		return false;
+		
 	}
 	
 	
 	
 	public String stampaInformazioniMagazzino() {
-		return "\n\ncialde caffe: "+getCialdeCaffe()+"\n"+
-			   "cialde caffe arabica: "+getCialdeCaffeArabica()+"\n"+
-			   "cialde the: "+getCialdeThe()+"\n"+
-		       "cialde the limone: "+getCialdeTheLimone()+"\n"+
-			   "cialde camomilla: "+getCialdeCamomilla()+"\n"+
-		       "cialde cioccolato: "+getCialdeCioccolata();   
+		return "\n\ncialde caffe: "+caffe.getQuantità()+"\n"+
+			   "cialde caffe arabica: "+caffeArabica.getQuantità()+"\n"+
+			   "cialde the: "+the.getQuantità()+"\n"+
+		       "cialde the limone: "+theLimone.getQuantità()+"\n"+
+			   "cialde camomilla: "+camomilla.getQuantità()+"\n"+
+		       "cialde cioccolato: "+cioccolata.getQuantità();   
 	}
 		
 	

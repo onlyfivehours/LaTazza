@@ -53,10 +53,26 @@ public class Personale {
 		return aux;
 	}
 	
-	public boolean IncrementaDebitoDipendente(String nome, String cognome,int euro, double centesimi) {
+	
+	public String[] getStringPersonaleConDebiti() {
+		ArrayList<Dipendente> personaleConDebiti =  new ArrayList<Dipendente>();
+		for(Dipendente element:listaPersonale)
+			if(element.getDebito().getValore() > 0)
+				personaleConDebiti.add(element);
+		
+		String [] debitori = new String[personaleConDebiti.size()];
+		int i = 0;
+		for(Dipendente element:personaleConDebiti) {;
+			debitori[i] = element.getNome() + " " + element.getCognome();
+		}
+		return debitori;
+	}
+
+	
+	public boolean IncrementaDebitoDipendente(String nome, String cognome,int euro, int centesimi) {
 		int index = CercaDipendente(nome,cognome);
 		if(index < 0) return false;
-		listaPersonale.get(index).incrementaDebito(new Euro((long)euro,(long)centesimi));
+		listaPersonale.get(index).incrementaDebito(new Euro((long)euro,centesimi));
 		return true;
 	}
 	
@@ -68,17 +84,6 @@ public class Personale {
 	}
 	
 	
-	
-	public String[] getStringPersonaleConDebiti() {
-		String [] aux = new String[listaPersonale.size()];
-		int i = 0;
-		for(Dipendente element:listaPersonale) {
-			if(element.getDebito().getValore() > 0)
-				aux[i] = element.getNome() + " " + element.getCognome();
-			i++;
-		}
-		return aux;
-	}
 
 	
 	public long getDebitoDipendente(String nome, String cognome) {
@@ -93,9 +98,9 @@ public class Personale {
 		String dati="\n\n";
 		for(Dipendente d : listaPersonale){
 			if(d.getDebito().getValore() > 0)
-				dati += d.getNome() + " " + d.getCognome() + "debito:" + d.getDebito().stampa()+"\n";
+				dati += d.getNome() + " " + d.getCognome() + " debito:" + d.getDebito().stampa()+"\n";
 		}
-		if(dati.equals("\n\n")) dati += "nessun debito registrato";
+		if(dati.equals("\n\n")) dati = "nessun debito registrato";
 		return dati;
 	}
 }

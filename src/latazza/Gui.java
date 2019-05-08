@@ -190,14 +190,14 @@ public class Gui {
 						return;
 					}
 					
-					double input = strConvertDouble(txtImportoPagamentoDebito.getText());
+					int input = (int)(strConvertDouble(txtImportoPagamentoDebito.getText())*100);
 					if(input <= 0) {
 						lblMessaggioDebito.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
 						lblMessaggioDebito.setText("inserire un importo numerico > 0 \n(usare il punto per i decimali)");
 						return;
 					}
 					else {
-						String[] NomeCognome = combo_SelezionaDebito.getText().split("");
+						String[] NomeCognome = combo_SelezionaDebito.getText().split(" ");
 						long debito = personale.getDebitoDipendente(NomeCognome[0],NomeCognome[1]);
 						if(input > debito ) {
 							lblMessaggioDebito.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
@@ -207,13 +207,15 @@ public class Gui {
 							return;
 						}
 						else {
-							personale.DecrementaDebitoDipendente(NomeCognome[0], NomeCognome[1], 0, debito - (input*100));
+							personale.DecrementaDebitoDipendente(NomeCognome[0], NomeCognome[1], 0, input);
 							cassa.aggiungiSaldo(new Euro(0,(long)input*100));
 						  	tabFolderDati.setSelection(2);
 						  	lblInformazioniDebiti.setText(personale.printDebitiPersonale());
 						  	
-						  	if(debito - (input*100) == 0)
+						  	if(debito - input == 0) {
 						  		combo_SelezionaDebito.setItems(personale.getStringPersonaleConDebiti()); //aggiorna il combo
+								combo_SelezionaDebito.setText("Seleziona Dipendente");
+						  	}
 						}
 					}
 					
@@ -286,14 +288,7 @@ public class Gui {
 
 				}
 				else {
-					switch(combo_SelezionaCialde.getText()) {
-						case "caffè": magazzino.AggiungiCialdeCaffe(input); break;
-						case "caffè arabica": magazzino.AggiungiCialdeCaffeArabica(input); break;
-						case "thè": System.out.println("the"); magazzino.AggiungiCialdeThe(input); break;
-						case "thè al limone": System.out.println("the al limone"); magazzino.AggiungiCialdeTheLimone(input); break;
-						case "cioccolata" : System.out.println("cioccolata"); magazzino.AggiungiCialdeCioccolata(input); break;
-						case "camomilla":System.out.println("camomilla"); magazzino.AggiungiCialdeCamomilla(input); break;
-					}
+					magazzino.AggiungiCialda(combo_SelezionaCialde.getText(), input); 
 					lblMessaggioErroreMagazzino.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
 					lblMessaggioErroreMagazzino.setText("Rifornimento registrato per \n"+ input+
 							" scatole di "+combo_SelezionaCialde.getText()+" per un totale di "+input*20+"€");
@@ -313,7 +308,7 @@ public class Gui {
 		Combo comboNomePersonale = new Combo(GestioneVendite, SWT.NONE);
 		comboNomePersonale.setBounds(10, 10, 131, 20);
 		comboNomePersonale.setItems(personale.getStringPersonale());
-		comboNomePersonale.setText("Nome Personale");
+		comboNomePersonale.setText("Nome Dipendente");
 		
 		Combo comboTipoCialda = new Combo(GestioneVendite, SWT.NONE);
 		comboTipoCialda.setBounds(10, 59, 131, 27);
@@ -337,138 +332,101 @@ public class Gui {
 		RadioCredito.setBounds(184, 103, 93, 20);
 		RadioCredito.setText("A credito");
 		
-		Label LabelVenditaCialde = new Label(GestioneVendite, SWT.NONE);
-		LabelVenditaCialde.setBounds(10, 129, 275, 34);
+		Label labelVenditaCialde = new Label(GestioneVendite, SWT.NONE);
+		labelVenditaCialde.setBounds(10, 153, 275, 79);
 		
 		Label lblNewLabel = new Label(GestioneVendite, SWT.NONE);
 		lblNewLabel.setBounds(155, 20, 20, 17);
 		lblNewLabel.setText("O");
 		
 		Button ButtonRegistraVendita = new Button(GestioneVendite, SWT.NONE);
+		ButtonRegistraVendita.setBounds(23, 129, 114, 18);
+		ButtonRegistraVendita.setText("Registra Vendita");
+		Button ButtonCancellaVendita = new Button(GestioneVendite, SWT.NONE);
+		ButtonCancellaVendita.setText("Cancella");
+		ButtonCancellaVendita.setBounds(184, 129, 75, 18);
+
+		
 		ButtonRegistraVendita.addSelectionListener(new SelectionAdapter() {
-			
-			
-			
-			public int aggiornaMagazzino(int numeroCialde) {
-				switch(comboTipoCialda.getText()) {
-				case "caffè":
-					if(magazzino.getCialdeCaffe() < numeroCialde) {
-						return magazzino.getCialdeCaffe();
-					}
-					magazzino.EliminaCialdeCaffe(numeroCialde);
-					break;
-				case "caffè arabica":
-					if(magazzino.getCialdeCaffeArabica() < numeroCialde) {
-						return magazzino.getCialdeCaffeArabica();
-					}
-					magazzino.EliminaCialdeCaffeArabica(numeroCialde);
-					break;
-				case "thè":
-					if(magazzino.getCialdeThe() < numeroCialde) {
-						return magazzino.getCialdeThe();
-					}
-					magazzino.EliminaCialdeThe(numeroCialde);
-					break;
-				case "thè al limone":
-					if(magazzino.getCialdeTheLimone() < numeroCialde) {
-						return magazzino.getCialdeTheLimone();
-					}
-					magazzino.EliminaCialdeTheLimone(numeroCialde);
-					break;
-				case "cioccolata" :
-					if(magazzino.getCialdeCioccolata() < numeroCialde) {
-						return magazzino.getCialdeCioccolata();
-					}
-					magazzino.EliminaCialdeCioccolata(numeroCialde);
-					break;
-				case "camomilla":
-					if(magazzino.getCialdeCamomilla() < numeroCialde) {
-						return magazzino.getCialdeCamomilla();
-					}
-					magazzino.EliminaCialdeCamomilla(numeroCialde);
-					break;
-				}
-				return -1;
-			}
-			
-			public int registraPagamento(double numeroCialde, Euro pagamento) {
 				
-				if(numeroCialde < 0) {
-					LabelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
-					LabelVenditaCialde.setText("importo non valido");
-					return -2;
-				}
-				int res = aggiornaMagazzino((int)numeroCialde);
-				if(res != -1) return res;
-				cassa.aggiungiSaldo(pagamento);
-				return -1;
-				
-			}
-			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if(txtQuantitcialde.getText().isEmpty() || txtQuantitcialde.getText().equals("Quantità(cialde)")) return;
-				if(comboTipoCialda.getText().equals("Tipo Cialda")) return;
-				
-				LabelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));				
-				
-				double numeroCialde = strConvertDouble(txtQuantitcialde.getText());
-				Euro pagamento = new Euro(0, (long)numeroCialde * 50);
-
-				if(comboNomePersonale.getText().equals("Nome Personale")) {
-
+				if(comboNomePersonale.getText().equals("Nome Dipendente") &&
+						(txtNomeVisitatore.getText().equals("") || txtNomeVisitatore.getText().equals("Nome Visitatore"))){
+					labelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
+					labelVenditaCialde.setText("selezionare al più un compratore");
+					return;
+				}
+				if(comboTipoCialda.getText().equals("Tipo Cialda")) {
+					labelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
+					labelVenditaCialde.setText("Selezionare un tipo di cialda");
+					return;
+				}
 					
-					if(txtNomeVisitatore.getText().isEmpty() || txtNomeVisitatore.getText().equals("Nome Visitatore")) return;
+				int input = (int) strConvertDouble(txtQuantitcialde.getText());
+				if(input <= 0) {
+					labelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
+					labelVenditaCialde.setText("inserire una quantita numerica >= 1");
+					return;
+				}
+				
+				if(!(txtNomeVisitatore.getText().equals("") || txtNomeVisitatore.getText().equals("Nome Visitatore")) 
+						&& !comboNomePersonale.getText().equals("Nome Dipendente")) {
+					labelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
+					labelVenditaCialde.setText("Selezionare soltanto uno tra\n\"dipendente\" e \"visitatore\"");
+					return;
+				}
+				
+				int numeroCialde = magazzino.getQuantitaCialda(comboTipoCialda.getText());
+				if(numeroCialde < input) {
+					labelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
+					labelVenditaCialde.setText("Non sono disponibili "+input+" cialde (max "+numeroCialde+")");
+					tabFolderDati.setSelection(0);
+				  	lblInformazioniMagazzino.setText(magazzino.stampaInformazioniMagazzino());
+				  	return;
+				}
+				else {
 					if(RadioCredito.getSelection()) {
-						LabelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
-						LabelVenditaCialde.setText("Non è possibile vendere a credito a visitatori");
-						return;
+						if(!(txtNomeVisitatore.getText().equals("") || txtNomeVisitatore.getText().equals("Nome Visitatore"))) {
+							labelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
+							labelVenditaCialde.setText("Non è possibile vendere a credito ai visitatori");
+							return;
+						}	
+						magazzino.EliminaCialda(comboTipoCialda.getText(), input);
+						String[] NomeCognome = comboNomePersonale.getText().split(" ");
+						personale.IncrementaDebitoDipendente(NomeCognome[0], NomeCognome[1],0,(int)((0.5*input)*100));
+					  	lblInformazioniMagazzino.setText(magazzino.stampaInformazioniMagazzino());
+					  	lblInformazioniDebiti.setText(personale.printDebitiPersonale());
+				  		combo_SelezionaDebito.setItems(personale.getStringPersonaleConDebiti()); //aggiorna il combo
+						combo_SelezionaDebito.setText("Seleziona Dipendente");
+					  	tabFolderDati.setSelection(2);
+				  		labelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
+				  		labelVenditaCialde.setText("Vendita registrata per "+input+" cialde di\n"+
+								comboTipoCialda.getText()+" a "+comboNomePersonale.getText()+"\n"+
+										"con pagamento a credito di "+(double)(0.5*input)+"€");
 					}
-					
-					int max = registraPagamento(numeroCialde, pagamento);
-					if(max == -2) return;
-					if(max > -1) {
-						LabelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
-						LabelVenditaCialde.setText("Non sono disponibili " + numeroCialde + " cialde di " + comboTipoCialda.getText() + " (max " + max +")");;
-					}
-					return;
-				}
-				
-				int max = registraPagamento(numeroCialde, pagamento);
-				if(max == -2) return;
-				if(max > -1) {
-					LabelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
-					LabelVenditaCialde.setText("Non sono disponibili " + numeroCialde + " cialde di " + comboTipoCialda.getText() + " (max " + max +")");;
-					return;
-				}
-				String metodoPagamento;
-				
-				if(RadioCredito.getSelection()) {
-					metodoPagamento = RadioCredito.getText();
-					String [] nome = comboNomePersonale.getText().split(" ");
-					personale.IncrementaDebitoDipendente(nome[0], nome[1], 0,numeroCialde*50 );
-
-					//personale.getDipendente(nome[0], nome[1]).incrementaDebito(pagamento);
-				}
-				else
-					metodoPagamento = RadioContanti.getText();
-				
-				LabelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
-				LabelVenditaCialde.setText("Vendita registrata per " + numeroCialde + " cialde a " + comboNomePersonale.getText() + " con pagamento " + metodoPagamento +" di " + numeroCialde*0.5 + " euro");
-			
-			}
+					else {
+						String NomeCognome = comboNomePersonale.getText().equals("Nome Dipendente") ? 
+								txtNomeVisitatore.getText() : comboNomePersonale.getText();
+						magazzino.EliminaCialda(comboTipoCialda.getText(), input);
+						cassa.aggiungiSaldo(new Euro(0,(int)((0.5*input)*100)));
+						lblInformazioniCassa.setText(cassa.printSaldo());
+						lblInformazioniMagazzino.setText(magazzino.stampaInformazioniMagazzino());
+					  	labelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
+						labelVenditaCialde.setText("Vendita registrata per "+input+" cialde di\n"+
+								comboTipoCialda.getText()+"a "+NomeCognome+"\n"+
+									"con pagamento in contanti di "+0.5*input+"€");
+					}	
+				}	
+			}		
 		});
-		ButtonRegistraVendita.setBounds(26, 169, 114, 18);
-		ButtonRegistraVendita.setText("Registra Vendita");
 		
-		Button ButtonCancellaVendita = new Button(GestioneVendite, SWT.NONE);
 		ButtonCancellaVendita.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				LabelVenditaCialde.setText("");
 				txtQuantitcialde.setText("Quantità(cialde)");
 				txtNomeVisitatore.setText("Nome Visitatore");
-				comboNomePersonale.setText("Nome Personale");
+				comboNomePersonale.setText("Nome Dipendente");
 				comboTipoCialda.setText("Tipo Cialda");
 				if(RadioCredito.getSelection()) {
 					RadioContanti.setSelection(true);
@@ -476,7 +434,8 @@ public class Gui {
 				}
 			}
 		});
-
+		
+	
 ////////////////////////////////////////////fine vendita cialde//////////////////////////////////////////////////////////////////////////////////////
 
           
@@ -540,6 +499,7 @@ public class Gui {
 				if(personale.aggiungiPersonale(NuovoDipendente[0],NuovoDipendente[1])) {
 					lblLabelAggiungiPersonale.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
 					lblLabelAggiungiPersonale.setText((txtNomeDipendente.getText()+" aggiunto nel sistema"));
+
 				}else {
 					lblLabelAggiungiPersonale.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
 					lblLabelAggiungiPersonale.setText(txtNomeDipendente.getText()+" è già presente nel sistema");
@@ -547,6 +507,7 @@ public class Gui {
 				combo_SelezionaPersonale.setItems(personale.getStringPersonale());
 				combo_SelezionaPersonale.setText("Nome Cognome");
 				comboNomePersonale.setItems(personale.getStringPersonale());
+				comboNomePersonale.setText("Nome Dipendente");
 
 			}
 		});
@@ -564,6 +525,10 @@ public class Gui {
 				lblLabelRimuoviPersonale.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
 				lblLabelRimuoviPersonale.setText(NomeCognome + " rimosso dal sistema");
 				combo_SelezionaPersonale.setText("Nome Cognome");
+				comboNomePersonale.setItems(personale.getStringPersonale());
+				comboNomePersonale.setText("Nome Dipendente");
+				combo_SelezionaDebito.setItems(personale.getStringPersonaleConDebiti()); //aggiorna il combo
+				combo_SelezionaDebito.setText("Seleziona Dipendente");
 			}
 		});
 		

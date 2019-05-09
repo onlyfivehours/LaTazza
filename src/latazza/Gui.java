@@ -77,12 +77,13 @@ public class Gui {
 		TabFolder tabFolder = new TabFolder(shlLatazza, SWT.NONE);
 		tabFolder.setBounds(286, 168, 171, 82);
 		
+		TabItem tabGestioneGenerale = new TabItem(tabFolder, SWT.NONE | SWT.CLOSE);
+        tabGestioneGenerale.setText("Gestione Generale");
+       
         TabItem tabGestionePersonale = new TabItem(tabFolder, SWT.NONE);
         tabGestionePersonale.setText("Gestione Personale");
 	
-        TabItem tabGestioneGenerale = new TabItem(tabFolder, SWT.NONE | SWT.CLOSE);
-        tabGestioneGenerale.setText("Gestione Generale");
-       
+        
         
         Group grpGestioneGenerale = new Group(tabFolder,SWT.NONE);
         tabGestioneGenerale.setControl(grpGestioneGenerale);
@@ -208,9 +209,14 @@ public class Gui {
 						}
 						else {
 							personale.DecrementaDebitoDipendente(NomeCognome[0], NomeCognome[1], 0, input);
-							cassa.aggiungiSaldo(new Euro(0,(long)input*100));
+							cassa.aggiungiSaldo(new Euro(0,input));
+							lblMessaggioDebito.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
+							lblMessaggioDebito.setText("Pagamento registrato di "+combo_SelezionaDebito.getText()+ 
+									"\nper "+txtImportoPagamentoDebito.getText()+"€ "+" debito residuo: "+
+									(double)personale.getDebitoDipendente(NomeCognome[0], NomeCognome[1])/100+"€");
 						  	tabFolderDati.setSelection(2);
 						  	lblInformazioniDebiti.setText(personale.printDebitiPersonale());
+						  	lblInformazioniCassa.setText(cassa.printSaldo());
 						  	
 						  	if(debito - input == 0) {
 						  		combo_SelezionaDebito.setItems(personale.getStringPersonaleConDebiti()); //aggiorna il combo
@@ -424,8 +430,8 @@ public class Gui {
 		ButtonCancellaVendita.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				txtQuantitcialde.setText("Quantità(cialde)");
-				txtNomeVisitatore.setText("Nome Visitatore");
+				txtQuantitcialde.setText("");
+				txtNomeVisitatore.setText("");
 				comboNomePersonale.setText("Nome Dipendente");
 				comboTipoCialda.setText("Tipo Cialda");
 				if(RadioCredito.getSelection()) {

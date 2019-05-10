@@ -58,7 +58,7 @@ public class Magazzino {
 	
 	
 	
-	public String stampaInformazioniMagazzino() {
+	public String getInformazioniMagazzino() {
 		return "\n\ncialde caffe: "+caffe.getQuantità()+"\n"+
 			   "cialde caffe arabica: "+caffeArabica.getQuantità()+"\n"+
 			   "cialde the: "+the.getQuantità()+"\n"+

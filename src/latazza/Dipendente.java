@@ -40,8 +40,8 @@ public class Dipendente {
 		return debito.sottrai(importo);
 	}
 	
-	public String stampaDebito() {
-		return debito.stampa();
+	public String getStringDebito() {
+		return debito.getStringValore();
 	}
 	
 	public Euro getDebito() {

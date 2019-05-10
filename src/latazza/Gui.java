@@ -12,23 +12,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.custom.StyledText;
-
-import java.awt.Color;
-
-import org.eclipse.jface.text.TextViewer;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
+
 
 public class Gui {
 	private static Text txtQuantitascatole;
@@ -52,18 +39,14 @@ public class Gui {
 	    }
 	}
 	
-	public static void initialize() {
-		cassa = new Cassa(50);
-		magazzino = new Magazzino();
-		personale = new Personale();
-	}
 
 	
 	public static void main(String[] args) {
-		
-		initialize();
+		cassa = new Cassa(50);
+		magazzino = new Magazzino();
+		personale = new Personale();
+	
 		Display display = new Display();
-		//Display display = Display.getDefault();
 		
 		// SHELL BASE //
 		Shell shlLatazza = new Shell(display);
@@ -128,15 +111,15 @@ public class Gui {
 	  	
 	  	   Label lblInformazioniMagazzino = new Label(tabFolderDati,SWT.NONE);
 	  	   tabItemMagazzino.setControl(lblInformazioniMagazzino);
-	  	   lblInformazioniMagazzino.setText(magazzino.stampaInformazioniMagazzino());
+	  	   lblInformazioniMagazzino.setText(magazzino.getInformazioniMagazzino());
 			
 	  	   Label lblInformazioniCassa = new Label(tabFolderDati,SWT.NONE);
 	  	   tabItemCassa.setControl(lblInformazioniCassa);
-	  	   lblInformazioniCassa.setText(cassa.printSaldo());
+	  	   lblInformazioniCassa.setText(cassa.getStringSaldo());
 			
 	  	   Label lblInformazioniDebiti = new Label(tabFolderDati,SWT.NONE);
 	  	   tabItemDebiti.setControl(lblInformazioniDebiti);
-	  	   lblInformazioniDebiti.setText(personale.printDebitiPersonale());
+	  	   lblInformazioniDebiti.setText(personale.getStringPersonaleConDebiti());
 			
 	  	   
 
@@ -154,7 +137,7 @@ public class Gui {
 	  	   
 	  	   	Combo combo_SelezionaDebito = new Combo(GestioneDebiti, SWT.NONE);
 			combo_SelezionaDebito.setBounds(89, 10, 149, 34);
-			combo_SelezionaDebito.setItems(personale.getStringPersonaleConDebiti()); //IMPORTANTE PER DIAGRAMMA
+			combo_SelezionaDebito.setItems(personale.getArrayStringPersonaleConDebiti()); //IMPORTANTE PER DIAGRAMMA
 			combo_SelezionaDebito.setText("Seleziona Dipendente");
 			
 			txtImportoPagamentoDebito = new Text(GestioneDebiti, SWT.BORDER);
@@ -178,6 +161,7 @@ public class Gui {
 				public void widgetSelected(SelectionEvent e) {
 					combo_SelezionaDebito.setText("Seleziona Dipendente");
 					txtImportoPagamentoDebito.setText("");
+					lblMessaggioDebito.setText("");
 				}
 			});
 	  	   
@@ -198,28 +182,26 @@ public class Gui {
 						return;
 					}
 					else {
+						Euro debitoSaldato = new Euro(0,input);
 						String[] NomeCognome = combo_SelezionaDebito.getText().split(" ");
-						long debito = personale.getDebitoDipendente(NomeCognome[0],NomeCognome[1]);
-						if(input > debito ) {
+						if(!personale.DecrementaDebitoDipendente(NomeCognome[0], NomeCognome[1],debitoSaldato)) {
 							lblMessaggioDebito.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
 							lblMessaggioDebito.setText("il debito di "+combo_SelezionaDebito.getText()+
-									"è inferiore all'importo indicato");
+									" è inferiore all'importo indicato");
 						  	tabFolderDati.setSelection(2);
-							return;
 						}
 						else {
-							personale.DecrementaDebitoDipendente(NomeCognome[0], NomeCognome[1], 0, input);
-							cassa.aggiungiSaldo(new Euro(0,input));
+							cassa.aggiungiSaldo(debitoSaldato);
 							lblMessaggioDebito.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
 							lblMessaggioDebito.setText("Pagamento registrato di "+combo_SelezionaDebito.getText()+ 
 									"\nper "+txtImportoPagamentoDebito.getText()+"€ "+" debito residuo: "+
 									(double)personale.getDebitoDipendente(NomeCognome[0], NomeCognome[1])/100+"€");
 						  	tabFolderDati.setSelection(2);
-						  	lblInformazioniDebiti.setText(personale.printDebitiPersonale());
-						  	lblInformazioniCassa.setText(cassa.printSaldo());
+						  	lblInformazioniDebiti.setText(personale.getStringPersonaleConDebiti());
+						  	lblInformazioniCassa.setText(cassa.getStringSaldo());
 						  	
-						  	if(debito - input == 0) {
-						  		combo_SelezionaDebito.setItems(personale.getStringPersonaleConDebiti()); //aggiorna il combo
+						  	if( personale.getDebitoDipendente(NomeCognome[0],NomeCognome[1]) == 0) {
+						  		combo_SelezionaDebito.setItems(personale.getArrayStringPersonaleConDebiti()); //aggiorna il combo
 								combo_SelezionaDebito.setText("Seleziona Dipendente");
 						  	}
 						}
@@ -266,6 +248,7 @@ public class Gui {
 			public void widgetSelected(SelectionEvent e) {
 				combo_SelezionaCialde.setText("tipo cialda");
 				txtQuantitascatole.setText("");
+				lblMessaggioErroreMagazzino.setText("");
 			}
 		});
 		
@@ -288,9 +271,9 @@ public class Gui {
 					lblMessaggioErroreMagazzino.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
 					lblMessaggioErroreMagazzino.setText("Il rifornimento non può essere effettuato:"
 							+ " \ncosto di "+input+" scatole di "+combo_SelezionaCialde.getText()+": "+(2000*input)/100+" euro\n"
-									+cassa.printSaldo());
+									+cassa.getStringSaldo());
 				  	tabFolderDati.setSelection(1);
-				  	lblInformazioniCassa.setText(cassa.printSaldo());
+				  	lblInformazioniCassa.setText(cassa.getStringSaldo());
 
 				}
 				else {
@@ -299,8 +282,8 @@ public class Gui {
 					lblMessaggioErroreMagazzino.setText("Rifornimento registrato per \n"+ input+
 							" scatole di "+combo_SelezionaCialde.getText()+" per un totale di "+input*20+"€");
 				  	tabFolderDati.setSelection(0);
-				  	lblInformazioniMagazzino.setText(magazzino.stampaInformazioniMagazzino());
-				  	lblInformazioniCassa.setText(cassa.printSaldo());
+				  	lblInformazioniMagazzino.setText(magazzino.getInformazioniMagazzino());
+				  	lblInformazioniCassa.setText(cassa.getStringSaldo());
 				}
 			}
 		});
@@ -388,7 +371,7 @@ public class Gui {
 					labelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
 					labelVenditaCialde.setText("Non sono disponibili "+input+" cialde (max "+numeroCialde+")");
 					tabFolderDati.setSelection(0);
-				  	lblInformazioniMagazzino.setText(magazzino.stampaInformazioniMagazzino());
+				  	lblInformazioniMagazzino.setText(magazzino.getInformazioniMagazzino());
 				  	return;
 				}
 				else {
@@ -400,10 +383,10 @@ public class Gui {
 						}	
 						magazzino.EliminaCialda(comboTipoCialda.getText(), input);
 						String[] NomeCognome = comboNomePersonale.getText().split(" ");
-						personale.IncrementaDebitoDipendente(NomeCognome[0], NomeCognome[1],0,(int)((0.5*input)*100));
-					  	lblInformazioniMagazzino.setText(magazzino.stampaInformazioniMagazzino());
-					  	lblInformazioniDebiti.setText(personale.printDebitiPersonale());
-				  		combo_SelezionaDebito.setItems(personale.getStringPersonaleConDebiti()); //aggiorna il combo
+						personale.IncrementaDebitoDipendente(NomeCognome[0], NomeCognome[1], new Euro(0,(int)((0.5*input)*100)));
+					  	lblInformazioniMagazzino.setText(magazzino.getInformazioniMagazzino());
+					  	lblInformazioniDebiti.setText(personale.getStringPersonaleConDebiti());
+				  		combo_SelezionaDebito.setItems(personale.getArrayStringPersonaleConDebiti()); //aggiorna il combo
 						combo_SelezionaDebito.setText("Seleziona Dipendente");
 					  	tabFolderDati.setSelection(2);
 				  		labelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
@@ -416,8 +399,8 @@ public class Gui {
 								txtNomeVisitatore.getText() : comboNomePersonale.getText();
 						magazzino.EliminaCialda(comboTipoCialda.getText(), input);
 						cassa.aggiungiSaldo(new Euro(0,(int)((0.5*input)*100)));
-						lblInformazioniCassa.setText(cassa.printSaldo());
-						lblInformazioniMagazzino.setText(magazzino.stampaInformazioniMagazzino());
+						lblInformazioniCassa.setText(cassa.getStringSaldo());
+						lblInformazioniMagazzino.setText(magazzino.getInformazioniMagazzino());
 					  	labelVenditaCialde.setForeground(SWTResourceManager.getColor(SWT.COLOR_GREEN));
 						labelVenditaCialde.setText("Vendita registrata per "+input+" cialde di\n"+
 								comboTipoCialda.getText()+"a "+NomeCognome+"\n"+
@@ -434,6 +417,7 @@ public class Gui {
 				txtNomeVisitatore.setText("");
 				comboNomePersonale.setText("Nome Dipendente");
 				comboTipoCialda.setText("Tipo Cialda");
+				labelVenditaCialde.setText("");
 				if(RadioCredito.getSelection()) {
 					RadioContanti.setSelection(true);
 					RadioCredito.setSelection(false);
@@ -464,6 +448,7 @@ public class Gui {
         txtNomeDipendente = new Text(AggiungiPersonale, SWT.BORDER);
         txtNomeDipendente.setText("Nome Cognome");
         txtNomeDipendente.setBounds(63, 65, 168, 34);
+      
         
         Button btnButtonAggiungiPersonale = new Button(AggiungiPersonale, SWT.NONE);
         btnButtonAggiungiPersonale.setBounds(104, 115, 81, 27);
@@ -484,22 +469,19 @@ public class Gui {
         combo_SelezionaPersonale.setItems(personale.getStringPersonale());
         combo_SelezionaPersonale.setText("Nome Cognome");
         
-
-////////////////////////////////////////////////// FINE GESTIONE PERSONALE //////////////////////////////////////////////////////////////////////////
-
-		
-		
-		
-		
-
-		
-		
+        
+        
 		btnButtonAggiungiPersonale.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String NomeCognome = txtNomeDipendente.getText();
 				if(NomeCognome.isEmpty() || NomeCognome.equals("Nome Cognome")) return;
-				
+				if(!NomeCognome.contains(" ")) {
+					lblLabelAggiungiPersonale.setForeground(SWTResourceManager.getColor(SWT.COLOR_RED));
+					lblLabelAggiungiPersonale.setText("inserire sia il nome che il cognome");
+					return;
+				}
+					
 				String [] NuovoDipendente = NomeCognome.split(" ");
 
 				if(personale.aggiungiPersonale(NuovoDipendente[0],NuovoDipendente[1])) {
@@ -533,10 +515,17 @@ public class Gui {
 				combo_SelezionaPersonale.setText("Nome Cognome");
 				comboNomePersonale.setItems(personale.getStringPersonale());
 				comboNomePersonale.setText("Nome Dipendente");
-				combo_SelezionaDebito.setItems(personale.getStringPersonaleConDebiti()); //aggiorna il combo
+				combo_SelezionaDebito.setItems(personale.getArrayStringPersonaleConDebiti()); //aggiorna il combo
 				combo_SelezionaDebito.setText("Seleziona Dipendente");
+				lblInformazioniDebiti.setText(personale.getStringPersonaleConDebiti());
 			}
 		});
+		
+		
+
+////////////////////////////////////////////////// FINE GESTIONE PERSONALE //////////////////////////////////////////////////////////////////////////
+
+		
 		
 		
 		

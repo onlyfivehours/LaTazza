@@ -23,7 +23,7 @@ public class Cassa {
 		return this.saldo;
 	}
 	
-	public String printSaldo() {
-		return "Saldo disponibile: "+saldo.stampa();
+	public String getStringSaldo() {
+		return "Saldo disponibile: "+saldo.getStringValore();
 	}
 }

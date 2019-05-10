@@ -9,6 +9,11 @@ public class Personale {
 		listaPersonale = new ArrayList<Dipendente>(); 
 	}
 	
+	
+	public ArrayList<Dipendente> getPersonale() {
+		return listaPersonale;
+	}
+	
 	public int CercaDipendente(String nome, String cognome) {
 		int index = 0;
 		for(Dipendente d: listaPersonale) {
@@ -34,15 +39,32 @@ public class Personale {
 		return true;
 	}
 	
+	public void IncrementaDebitoDipendente(String nome, String cognome,Euro importo) {
+		int index = CercaDipendente(nome,cognome);
+		listaPersonale.get(index).incrementaDebito(importo);
+	}
+	
+	public boolean DecrementaDebitoDipendente(String nome, String cognome,Euro importo) {
+		int index = CercaDipendente(nome,cognome);
+		return listaPersonale.get(index).decrementaDebito(importo);
+		
+	}
+	
+	
+	public long getDebitoDipendente(String nome, String cognome) {
+		int index = CercaDipendente(nome,cognome);
+		return listaPersonale.get(index).getDebito().getValore();
+		
+	}
+	
 	
 	public int size() {
 		return listaPersonale.size();
 	}
 	
-	public ArrayList<Dipendente> getPersonale() {
-		return listaPersonale;
-	}
+
 	
+	//ritorna un array di stringhe contenente il nome ed il cognome di tutti i dipendenti aggiunti
 	public String[] getStringPersonale() {
 		String [] aux = new String[listaPersonale.size()];
 		int i = 0;
@@ -53,8 +75,11 @@ public class Personale {
 		return aux;
 	}
 	
-	
-	public String[] getStringPersonaleConDebiti() {
+
+
+	//ritorna un array di stringhe contenente il nome ed il cognome dei soli dipendenti
+	//aventi debito
+	public String[] getArrayStringPersonaleConDebiti() {
 		ArrayList<Dipendente> personaleConDebiti =  new ArrayList<Dipendente>();
 		for(Dipendente element:listaPersonale)
 			if(element.getDebito().getValore() > 0)
@@ -62,43 +87,20 @@ public class Personale {
 		
 		String [] debitori = new String[personaleConDebiti.size()];
 		int i = 0;
-		for(Dipendente element:personaleConDebiti) {;
+		for(Dipendente element:personaleConDebiti) {
 			debitori[i] = element.getNome() + " " + element.getCognome();
+			i++;
 		}
 		return debitori;
 	}
-
 	
-	public boolean IncrementaDebitoDipendente(String nome, String cognome,int euro, int centesimi) {
-		int index = CercaDipendente(nome,cognome);
-		if(index < 0) return false;
-		listaPersonale.get(index).incrementaDebito(new Euro((long)euro,centesimi));
-		return true;
-	}
-	
-	public boolean DecrementaDebitoDipendente(String nome, String cognome,int euro, double centesimi) {
-		int index = CercaDipendente(nome,cognome);
-		if(index < 0) return false;
-		listaPersonale.get(index).decrementaDebito(new Euro((long)euro,(long)centesimi));
-		return true;
-	}
-	
-	
-
-	
-	public long getDebitoDipendente(String nome, String cognome) {
-		int index = CercaDipendente(nome,cognome);
-		if(index < 0)
-			return (long)index;
-		return listaPersonale.get(index).getDebito().getValore();
-		
-	}
-	
-	public String printDebitiPersonale() {
+	//ritorna la stringa contenente i debiti di ogni dipendente. questa stringa andra stampata
+	//sulla tab delle informazioni sui debitori
+	public String getStringPersonaleConDebiti() {
 		String dati="\n\n";
 		for(Dipendente d : listaPersonale){
 			if(d.getDebito().getValore() > 0)
-				dati += d.getNome() + " " + d.getCognome() + " debito:" + d.getDebito().stampa()+"\n";
+				dati += d.getNome() + " " + d.getCognome() + " debito:" + d.getDebito().getStringValore()+"\n";
 		}
 		if(dati.equals("\n\n")) dati = "nessun debito registrato";
 		return dati;

@@ -15,9 +15,8 @@ public class Euro {
 		return valore;
 	}
 	
-	public Euro somma(Euro e) {
+	public void somma(Euro e) {
 		this.valore = this.valore + e.getValore();
-		return this;
 	}
 	
 	public boolean sottrai(Euro e) {
@@ -29,20 +28,9 @@ public class Euro {
 			return true;
 		}
 	}
+
 	
-	public boolean ugualeA(Euro e){
-		if (valore == e.getValore())
-			return true;
-		else return false;
-	}
-	
-	public boolean minoreDi(Euro e){
-		if (valore <= e.getValore())
-			return true;
-		else return false;
-	}
-	
-	public String stampa(){
+	public String getStringValore(){
 		return (double)valore/100 +"€";
 	}
 }
